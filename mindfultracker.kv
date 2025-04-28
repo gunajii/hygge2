@@ -1,0 +1,576 @@
+#:import dp kivy.metrics.dp
+#:import MDTopAppBar kivymd.uix.toolbar.MDTopAppBar
+
+ScreenManager:
+    StartScreen:
+        name: "start"
+    HomePageScreen:
+        name: "homepage"
+    CommunityScreen:
+        name: "community"
+    QuestionnaireScreen:
+        name: "questionnaire"
+    LoginScreen:
+        name: "login"
+    RegisterScreen:
+        name: "register"
+    AnalyticsScreen:
+        name: "analytics"
+    ProfileScreen:
+        name: "profile"
+
+<StartScreen@Screen>:
+    canvas.before:
+        Color:
+            rgba: 0.96, 0.92, 0.88, 1
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+    BoxLayout:
+        orientation: 'vertical'
+        spacing: dp(20)
+        padding: dp(30)
+
+        MDLabel:
+            text: "Mental Health Check-In"
+            halign: "center"
+            font_style: "H5"
+            size_hint_y: None
+            height: dp(60)
+
+        Widget:
+
+        MDRaisedButton:
+            text: "Take Questionnaire"
+            size_hint_x: 0.7
+            pos_hint: {"center_x": 0.5}
+            on_press: app.change_screen("questionnaire")
+
+        MDRaisedButton:
+            text: "Login Directly"
+            size_hint_x: 0.7
+            pos_hint: {"center_x": 0.5}
+            on_press: app.change_screen("homepage")
+
+        Widget:
+
+<HomePageScreen@Screen>:
+    canvas.before:
+        Color:
+            rgba: 0.96, 0.92, 0.88, 1
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+    BoxLayout:
+        orientation: 'vertical'
+        padding: 20
+        spacing: 10
+
+        BoxLayout:
+            size_hint_y: 0.15
+            spacing: 15
+
+
+            Label:
+                id: greeting_label
+                text: "Hello, Name!"
+                font_size: 22
+                bold: True
+                color: 0, 0, 0, 1
+
+        BoxLayout:
+            size_hint_y: 0.3
+            MDLabel:
+                id: affirmation_label
+                text: "You are enough!"
+                font_size: 20
+                color: 0, 0, 0, 1
+                halign: "center"
+
+        BoxLayout:
+            size_hint_y: 0.25
+            orientation: 'vertical'
+            spacing: 10
+
+            MDLabel:
+                id: mood_label
+                text: "Mood: Neutral"
+                font_size: 16
+                halign: "center"
+                color: 0, 0, 0, 1
+
+            MDLabel:
+                text: "Select your mood"
+                font_size: 16
+                halign: "center"
+                color: 0, 0, 0, 1
+
+            Slider:
+                id: mood_slider
+                min: 0
+                max: 4
+                value: 2
+                step: 1
+                on_value: root.update_mood_label(self.value)
+
+            MDRaisedButton:
+                text: "Enter"
+                size_hint_x: 0.5
+                pos_hint: {"center_x": 0.5}
+                on_press: root.store_manual_mood()
+
+        BottomNavBar:
+
+<LoginScreen@Screen>:
+    BoxLayout:
+        orientation: "vertical"
+        padding: 20
+        spacing: 10
+
+        MDLabel:
+            text: "Login"
+            halign: "center"
+            font_style: "H5"
+
+        MDTextField:
+            id: login_email
+            hint_text: "Enter Email"
+            icon_right: "email"
+            size_hint_x: 0.8
+            pos_hint: {"center_x": 0.5}
+
+        MDTextField:
+            id: login_password
+            hint_text: "Enter Password"
+            password: True
+            icon_right: "lock"
+            size_hint_x: 0.8
+            pos_hint: {"center_x": 0.5}
+
+        MDLabel:
+            id: error_label
+            text: ""
+            halign: "center"
+            theme_text_color: "Error"
+
+        MDRaisedButton:
+            text: "Login"
+            size_hint_x: 0.5
+            pos_hint: {"center_x": 0.5}
+            on_press: root.login_user()
+
+        MDTextButton:
+            text: "Go to Register"
+            pos_hint: {"center_x": 0.5}
+            on_press: app.change_screen("register")
+
+<RegisterScreen@Screen>:
+    BoxLayout:
+        orientation: 'vertical'
+        padding: dp(20)
+        spacing: dp(10)
+
+        MDTextField:
+            id: name
+            hint_text: "Enter Your Name"
+
+        MDTextField:
+            id: email
+            hint_text: "Enter Email"
+
+        MDTextField:
+            id: password
+            hint_text: "Enter Password"
+            password: True
+
+        MDTextField:
+            id: confirm_password
+            hint_text: "Confirm Password"
+            password: True
+
+        MDLabel:
+            id: error_label
+            text: ""
+            theme_text_color: "Error"
+
+        MDRaisedButton:
+            text: "Register"
+            on_release: root.register_user()
+
+        MDTextButton:
+            text: "Back to Login"
+            on_release: app.sm.current = "login"
+
+<QuestionnaireScreen@Screen>:
+    MDBoxLayout:
+        orientation: "vertical"
+
+        canvas.before:
+            Color:
+                rgba: 0.96, 0.92, 0.88, 1
+            Rectangle:
+                pos: self.pos
+                size: self.size
+
+        ScrollView:
+            MDBoxLayout:
+                orientation: 'vertical'
+                padding: dp(20)
+                spacing: dp(10)
+                size_hint_y: None
+                height: self.minimum_height
+
+                MDLabel:
+                    text: "How do you feel today?"
+                    font_style: "H5"
+                    halign: "center"
+                    size_hint_y: None
+                    height: dp(50)
+
+                BoxLayout:
+                    orientation: 'vertical'
+                    size_hint_y: None
+                    height: dp(80)
+                    MDLabel:
+                        text: "1. How was your sleep?"
+                        font_style: "Body1"
+                    MDSlider:
+                        id: q1
+                        min: 1
+                        max: 5
+                        value: 3
+                        step: 1
+
+                BoxLayout:
+                    orientation: 'vertical'
+                    size_hint_y: None
+                    height: dp(80)
+                    MDLabel:
+                        text: "2. How is your energy level?"
+                        font_style: "Body1"
+                    MDSlider:
+                        id: q2
+                        min: 1
+                        max: 5
+                        value: 3
+                        step: 1
+
+                BoxLayout:
+                    orientation: 'vertical'
+                    size_hint_y: None
+                    height: dp(80)
+                    MDLabel:
+                        text: "3. How is your focus today?"
+                        font_style: "Body1"
+                    MDSlider:
+                        id: q3
+                        min: 1
+                        max: 5
+                        value: 3
+                        step: 1
+
+                BoxLayout:
+                    orientation: 'vertical'
+                    size_hint_y: None
+                    height: dp(80)
+                    MDLabel:
+                        text: "4. How are your stress levels?"
+                        font_style: "Body1"
+                    MDSlider:
+                        id: q4
+                        min: 1
+                        max: 5
+                        value: 3
+                        step: 1
+
+                BoxLayout:
+                    orientation: 'vertical'
+                    size_hint_y: None
+                    height: dp(80)
+                    MDLabel:
+                        text: "5. How is your mood overall?"
+                        font_style: "Body1"
+                    MDSlider:
+                        id: q5
+                        min: 1
+                        max: 5
+                        value: 3
+                        step: 1
+
+                MDRaisedButton:
+                    text: "Submit"
+                    size_hint_x: 0.6
+                    size_hint_y: None
+                    height: dp(50)
+                    pos_hint: {"center_x": 0.5}
+                    on_release: root.submit_responses()
+
+        BottomNavBar:
+
+<CommunityScreen@Screen>:
+    canvas.before:
+        Color:
+            rgba: 0.96, 0.92, 0.88, 1
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+    BoxLayout:
+        orientation: "vertical"
+        padding: 20
+        spacing: 10
+
+        BoxLayout:
+            size_hint_y: 0.1
+            spacing: 10
+
+            MDLabel:
+                text: "Community"
+                font_style: "H5"
+                halign: "center"
+
+            MDIconButton:
+                icon: "account-plus"
+                on_release: root.show_add_friend_dialog()
+
+
+        # 🔹 Friend List
+        ScrollView:
+            size_hint_y: 0.15
+            MDList:
+                id: friend_list
+
+        # 🔹 Chat Messages Area
+        ScrollView:
+            size_hint_y: 0.45
+            MDList:
+                id: message_list
+
+        # 🔹 Message Input
+        MDBoxLayout:
+            size_hint_y: 0.1
+            spacing: 10
+
+            MDBoxLayout:
+                size_hint_x: 0.85
+                radius: [25, 25, 25, 25]
+                MDTextField:
+                    id: message_input
+                    hint_text: "How are you feeling?"
+                    mode: "rectangle"
+                    size_hint_x: 0.9
+                    font_size: 18
+
+            MDIconButton:
+                size_hint_x: 0.15
+                md_bg_color: 0.8, 1, 0.8, 1
+                icon: "arrow-up-bold-circle"
+                font_size: 24
+                on_release: app.send_message()
+                radius: [25, 25, 25, 25]
+
+        BottomNavBar:
+
+
+<AnalyticsScreen@Screen>:
+    MDBoxLayout:
+        orientation: "vertical"
+        spacing: dp(10)
+
+        canvas.before:
+            Color:
+                rgba: 0.96, 0.92, 0.88, 1
+            Rectangle:
+                pos: self.pos
+                size: self.size
+
+        MDTopAppBar:
+            title: "Mood Analytics"
+
+        ScrollView:
+            do_scroll_x: False
+
+            MDBoxLayout:
+                orientation: "vertical"
+                size_hint_y: None
+                height: self.minimum_height
+                spacing: dp(20)
+                padding: dp(20)
+
+                Image:
+                    id: mood_graph
+                    source: "daily.png"
+                    size_hint_y: None
+                    height: dp(220)
+                    allow_stretch: True
+                    keep_ratio: True
+
+                Image:
+                    id: pie_graph
+                    source: "pie.png"
+                    size_hint_y: None
+                    height: dp(220)
+                    allow_stretch: True
+                    keep_ratio: True
+
+                MDBoxLayout:
+                    size_hint_y: None
+                    height: dp(50)
+                    spacing: dp(15)
+                    padding: [dp(10), 0]
+                    pos_hint: {"center_x": 0.5}
+                    MDRectangleFlatButton:
+                        text: "Daily"
+                        theme_text_color: "Custom"
+                        text_color: "black"
+                        line_color: "blue"
+                        on_release: root.load_chart("daily")
+                    MDRectangleFlatButton:
+                        text: "Weekly"
+                        theme_text_color: "Custom"
+                        text_color: "black"
+                        line_color: "blue"
+                        on_release: root.load_chart("weekly")
+                    MDRectangleFlatButton:
+                        text: "Monthly"
+                        theme_text_color: "Custom"
+                        text_color: "black"
+                        line_color: "blue"
+                        on_release: root.load_chart("monthly")
+
+        BottomNavBar:
+            size_hint_y: None
+            height: dp(56)
+
+
+
+<BottomNavBar@MDBoxLayout>:
+    size_hint_y: None
+    height: dp(60)
+    padding: dp(10), 0
+    spacing: dp(20)
+    orientation: "horizontal"
+    md_bg_color: 0.96, 0.92, 0.88, 1
+
+    MDBoxLayout:
+        size_hint_x: 1
+        padding: 0, dp(10)
+        MDIconButton:
+            icon: "home"
+            halign: "center"
+            user_font_size: "26sp"
+            theme_text_color: "Custom"
+            text_color: 0, 0, 0, 1
+            on_release: app.change_screen("homepage")
+
+    MDBoxLayout:
+        size_hint_x: 1
+        padding: 0, dp(10)
+        MDIconButton:
+            icon: "message"
+            halign: "center"
+            user_font_size: "26sp"
+            theme_text_color: "Custom"
+            text_color: 0, 0, 0, 1
+            on_release: app.change_screen("community")
+
+    MDBoxLayout:
+        size_hint_x: 1
+        padding: 0, dp(10)
+        MDIconButton:
+            icon: "chart-bar"
+            halign: "center"
+            user_font_size: "26sp"
+            theme_text_color: "Custom"
+            text_color: 0, 0, 0, 1
+            on_release: app.change_screen("analytics")
+
+    MDBoxLayout:
+        size_hint_x: 1
+        padding: 0, dp(10)
+        MDIconButton:
+            icon: "account"
+            halign: "center"
+            user_font_size: "26sp"
+            theme_text_color: "Custom"
+            text_color: 0, 0, 0, 1
+            on_release: app.change_screen("profile")
+
+<ProfileScreen>:
+    name: 'profile_screen'
+
+    canvas.before:
+        Color:
+            rgba: 0.96, 0.92, 0.88, 1
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+    BoxLayout:
+        orientation: 'vertical'
+        padding: dp(20)
+        spacing: dp(15)
+
+        BoxLayout:
+            orientation: 'vertical'
+            size_hint_y: None
+            height: self.minimum_height
+            spacing: dp(10)
+            padding: dp(10)
+            canvas.before:
+                Color:
+                    rgba: 1, 1, 1, 0.2
+                RoundedRectangle:
+                    pos: self.pos
+                    size: self.size
+                    radius: [15]
+
+
+
+            Button:
+                text: "Change Profile Picture"
+                size_hint_y: None
+                height: dp(40)
+                on_release: root.change_profile_picture()
+                pos_hint: {"center_x": 0.5}
+
+        Widget:  # Spacer
+
+        Label:
+            id: notification_label
+            text: "NOTIFICATIONS : Off"
+            background_color: 1, 0.4, 0.4, 1
+            color: 0, 0, 0, 0
+            font_size: '25sp'
+            size_hint_y: None
+            height: dp(45)
+            halign: 'center'
+            valign: 'middle'
+            text_size: self.size
+
+        Switch:
+            active: False
+            size_hint: None, None
+            size: dp(50), dp(30)
+            pos_hint: {"center_x": 0.5}
+            on_active: root.toggle_notifications(self, self.active)  # This calls toggle_notifications to trigger notifications
+
+        Widget:  # Spacer to push logout button lower
+
+        Button:
+            text: "Logout"
+            size_hint_y: None
+            height: dp(45)
+            background_color: 1, 0.4, 0.4, 1
+            color: 1, 1, 1, 1
+            font_size: '16sp'
+            on_release: root.logout()
+            pos_hint: {"center_x": 0.5}
+
+        BottomNavBar:
+            current_screen: 'profile_screen'
+
+
+
